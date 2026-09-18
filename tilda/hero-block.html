@@ -1,0 +1,238 @@
+<!-- ===========================================================
+     HERO FILM
+
+     PASTE ALL OF THIS INTO ONE TILDA BLOCK:
+       Библиотека блоков -> Другое -> T123 "HTML-код"
+
+     One film, the same one on phone and desktop:
+
+       media/hero.mp4        1440x1080   25.8 s   29.4 MB   silent
+
+     It is the raw camera file: the video stream is copied bit-for-bit
+     from the original and only the audio was removed, so this is the
+     quality ceiling of the source rather than of the web. It streams
+     from GitHub Pages, which answers range requests, so playback
+     starts on the first chunk instead of after a download:
+       https://futurenyx.github.io/elizaveta-hero
+
+     Nothing is uploaded to Tilda, so Tilda's 5 MB ceiling does not
+     apply to it.
+
+     The film fills the section edge to edge and crops rather than
+     letterboxes, which is what a background is meant to do. The film
+     is 4:3 and a phone screen is far taller than it is wide, so the
+     shorter you make the section on a phone, the less gets cropped
+     off the sides. That is why --h-mobile is well under a full
+     screen; raise it and you will lose more of the picture, not more
+     of the screen.
+
+     THE FIVE THINGS YOU MIGHT WANT TO CHANGE are the first lines of
+     the CSS below:
+       --h-mobile   height of the section on a phone
+       --h-desktop  height of the section on a laptop
+       --focus      which part of the picture survives the crop
+       --scrim      a black veil over the film, for text on top
+       --ground     colour behind the film while it loads
+     =========================================================== -->
+
+<style>
+/* let the block escape Tilda's 960px container */
+.t-rec .t123__wrapper,.t123 .t-container,.t123 .t-col{max-width:100%!important;padding:0!important;margin:0!important}
+
+/* ============================================================
+   Self-contained, namespaced under .ezh so nothing here can
+   reach the rest of the page.
+   ============================================================ */
+.ezh *,.ezh *::before,.ezh *::after{box-sizing:border-box}
+.ezh{
+  /* ---- height of the section ----
+     svh is the SMALL viewport height: the window as it is with the
+     phone's address bar showing. Using it means the section does not
+     jump when that bar slides away mid-scroll. */
+  --h-mobile:58svh;
+  --h-desktop:88svh;
+
+  /* ---- which part of the picture survives the crop ----
+     Same syntax as CSS object-position. "50% 50%" keeps the middle.
+     Try "50% 35%" to favour the top of the frame, "50% 65%" the
+     bottom. The first number moves it left and right. */
+  --focus:50% 50%;
+
+  /* ---- a black veil over the film ----
+     0 is the bare film. Raise it towards .45 if you put white text
+     on top and it is not reading cleanly. */
+  --scrim:0;
+
+  /* colour behind the film - seen only in the instant before the
+     poster paints */
+  --ground:#0a0a0a;
+
+  display:block;
+  background:var(--ground);
+  -webkit-text-size-adjust:100%;
+  text-size-adjust:100%;
+}
+
+.ezh__stage{
+  position:relative;
+  width:100%;
+  height:var(--h-mobile);
+  background:var(--ground);
+  overflow:hidden;
+  line-height:0;
+}
+
+@media (min-width:768px){
+  .ezh__stage{height:var(--h-desktop)}
+}
+
+.ezh__stage video,
+.ezh__stage img{
+  position:absolute;
+  inset:0;
+  display:block;
+  width:100%;
+  height:100%;
+  object-fit:cover;            /* fill the section, crop the overflow */
+  object-position:var(--focus);
+}
+
+/* the poster sits under the film and is covered the moment it paints,
+   so the section is never empty and never flashes black */
+.ezh__still{z-index:0}
+.ezh__stage video{z-index:1;opacity:0;transition:opacity .5s ease}
+.ezh[data-playing="1"] .ezh__stage video{opacity:1}
+
+.ezh__scrim{
+  position:absolute;
+  inset:0;
+  z-index:2;
+  background:#000;
+  opacity:var(--scrim);
+  pointer-events:none;
+}
+
+/* ---- play button ----
+   Only ever seen if autoplay is refused: iOS Low Power Mode, or a
+   visitor who has asked for reduced motion. */
+.ezh__play{
+  position:absolute;
+  inset:0;
+  z-index:3;
+  display:grid;
+  place-items:center;
+  border:0;
+  padding:0;
+  margin:0;
+  background:transparent;
+  cursor:pointer;
+  -webkit-appearance:none;
+  appearance:none;
+}
+.ezh__play[hidden]{display:none}
+.ezh__playDot{
+  width:clamp(58px,14vw,84px);
+  aspect-ratio:1;
+  border-radius:50%;
+  background:rgba(255,255,255,.92);
+  display:grid;
+  place-items:center;
+  box-shadow:0 8px 30px rgba(0,0,0,.28);
+  transition:transform .22s cubic-bezier(.2,.7,.3,1),background-color .22s;
+}
+.ezh__play:hover .ezh__playDot{transform:scale(1.06);background:#fff}
+.ezh__play:active .ezh__playDot{transform:scale(.97)}
+.ezh__play:focus-visible{outline:3px solid #fff;outline-offset:4px}
+.ezh__playDot svg{width:36%;height:36%;margin-left:12%;fill:#16161A}
+
+@media (prefers-reduced-motion:reduce){
+  .ezh__playDot{transition:none}
+  .ezh__stage video{transition:none}
+}
+</style>
+
+<div class="ezh">
+  <div class="ezh__stage">
+
+    <img class="ezh__still"
+         src="https://futurenyx.github.io/elizaveta-hero/media/hero-poster.webp"
+         alt="" aria-hidden="true" decoding="async" fetchpriority="high">
+
+    <video
+      preload="none"
+      playsinline
+      webkit-playsinline
+      muted
+      loop
+      disablepictureinpicture
+      data-full="https://futurenyx.github.io/elizaveta-hero/media/hero.mp4"
+      data-lite="https://futurenyx.github.io/elizaveta-hero/media/hero-lite.mp4"
+      aria-label="Интерьерная съёмка"></video>
+
+    <div class="ezh__scrim"></div>
+
+    <button class="ezh__play" type="button" aria-label="Смотреть" hidden>
+      <span class="ezh__playDot">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>
+      </span>
+    </button>
+
+  </div>
+</div>
+
+<script>
+(function () {
+  'use strict';
+
+  Array.prototype.forEach.call(document.querySelectorAll('.ezh'), function (wrap) {
+    var v    = wrap.querySelector('video');
+    var play = wrap.querySelector('.ezh__play');
+    if (!v || v.src) return;
+
+    /* ---- which file ----
+       Everyone gets the raw film. Only a genuinely constrained
+       visitor is sent to the small one: someone who has asked their
+       phone to save data, or who is on a 2G connection. */
+    var conn = navigator.connection || {};
+    var lean = conn.saveData === true || /(^|-)2g$/.test(conn.effectiveType || '');
+
+    v.src = v.getAttribute(lean ? 'data-lite' : 'data-full');
+
+    /* ---- autoplay, muted, once it is actually on screen ----
+       preload is "none" until then, so a visitor who never scrolls
+       this far pays for the 50 KB poster alone. */
+    var calm = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    v.addEventListener('playing', function () {
+      wrap.setAttribute('data-playing', '1');
+      play.hidden = true;
+    });
+
+    function start() {
+      if (calm) { play.hidden = false; return; }
+      v.preload = 'auto';
+      var q = v.play();
+      if (q && q.catch) q.catch(function () { play.hidden = false; });
+    }
+
+    if ('IntersectionObserver' in window) {
+      var io = new IntersectionObserver(function (entries) {
+        entries.forEach(function (e) {
+          if (e.isIntersecting) { start(); }
+          else if (!v.paused) { v.pause(); }
+        });
+      }, { threshold: 0.15 });
+      io.observe(wrap);
+    } else {
+      start();
+    }
+
+    play.addEventListener('click', function () {
+      play.hidden = true;
+      v.preload = 'auto';
+      var q = v.play();
+      if (q && q.catch) q.catch(function () { play.hidden = false; });
+    });
+  });
+})();
+</script>
