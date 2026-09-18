@@ -143,12 +143,15 @@
 }
 .ezh__inner > *{pointer-events:auto}
 
-/* Tilda's container: 1200px wide at most, 20px of gutter either side */
+/* Tilda's container: 1200px wide at most, 20px of gutter either side,
+   42px of air top and bottom. The paddings below are the cover's own
+   and they do not change with screen size - only the font sizes step,
+   which is why they are the only thing in the media queries. */
 .ezh__inner{
   width:100%;
   max-width:1200px;
   margin:0 auto;
-  padding:0 20px;
+  padding:42px 20px;
   text-align:center;
 }
 
@@ -168,6 +171,7 @@
   letter-spacing:.5px;
   line-height:1.17;
   margin:0;
+  padding:24px 0 38px;
 }
 
 .ezh__descr{
