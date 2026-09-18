@@ -2,49 +2,51 @@
 <meta charset="utf-8">
 <title>Hero film — preview</title>
 <meta name="viewport" content="width=device-width,initial-scale=1">
+<link href="https://fonts.googleapis.com/css2?family=Jost:wght@300;600&display=swap" rel="stylesheet">
 <style>
   body{margin:0;background:#fff;font:15px/1.6 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;color:#16161a}
-  .note{max-width:760px;margin:0 auto;padding:40px 24px 80px}
-  .note h1{font-size:19px;font-weight:600;letter-spacing:.01em;margin:0 0 14px}
+  /* FuturaPT is loaded by the real Tilda page; Jost stands in for it here */
+  .ezh{--sans:"Jost",Arial,sans-serif}
+  .note{max-width:760px;margin:0 auto;padding:44px 24px 90px}
+  .note h1{font-size:19px;font-weight:600;margin:0 0 14px}
   .note p{margin:0 0 12px;color:#4a4a52}
   .note code{background:#f2f2f4;padding:2px 6px;border-radius:4px;font-size:13px}
-  .filler{height:70vh;display:grid;place-items:center;color:#9a9aa2;font-size:13px;letter-spacing:.08em;text-transform:uppercase}
+  .filler{height:70vh;display:grid;place-items:center;color:#9a9aa2;font-size:12px;letter-spacing:.09em;text-transform:uppercase}
 </style>
 
 <!-- ===========================================================
-     HERO FILM
+     HERO - the film, with the existing hero text kept as it is
 
      PASTE ALL OF THIS INTO ONE TILDA BLOCK:
        Библиотека блоков -> Другое -> T123 "HTML-код"
+     then hide or delete the current cover block (rec4027248601).
 
-     One film, the same one on phone and desktop:
+     THE FILM
+       media/hero.mp4     1440x1080   25.8 s   29.4 MB   silent
 
-       media/hero.mp4        1440x1080   25.8 s   29.4 MB   silent
-
-     It is the raw camera file: the video stream is copied bit-for-bit
-     from the original and only the audio was removed, so this is the
-     quality ceiling of the source rather than of the web. It streams
-     from GitHub Pages, which answers range requests, so playback
-     starts on the first chunk instead of after a download:
+     This is the raw camera file: the video stream is copied
+     bit-for-bit from the original and only the audio was removed.
+     It streams from GitHub Pages, which answers range requests, so
+     playback starts on the first chunk instead of after a download:
        https://futurenyx.github.io/elizaveta-hero
 
-     Nothing is uploaded to Tilda, so Tilda's 5 MB ceiling does not
-     apply to it.
+     WHY IT LOOKS BETTER THAN THE ONE ON THE PAGE NOW
+     The current file was re-encoded by Tilda on upload to 1.5 Mbps,
+     and it was padded from 4:3 out to 16:9, so a share of even that
+     small bitrate is being spent on the black bars rather than on
+     the picture. This file is 9.1 Mbps with no bars at all.
 
-     The film fills the section edge to edge and crops rather than
-     letterboxes, which is what a background is meant to do. The film
-     is 4:3 and a phone screen is far taller than it is wide, so the
-     shorter you make the section on a phone, the less gets cropped
-     off the sides. That is why --h-mobile is well under a full
-     screen; raise it and you will lose more of the picture, not more
-     of the screen.
+     THE TEXT is the same as the cover it replaces: same words, same
+     FuturaPT, same weights, same 30% black veil over the film. The
+     sizes are fluid rather than fixed so the title does not have to
+     jump at each Tilda breakpoint.
 
      THE FIVE THINGS YOU MIGHT WANT TO CHANGE are the first lines of
      the CSS below:
        --h-mobile   height of the section on a phone
        --h-desktop  height of the section on a laptop
        --focus      which part of the picture survives the crop
-       --scrim      a black veil over the film, for text on top
+       --scrim      the black veil over the film
        --ground     colour behind the film while it loads
      =========================================================== -->
 
@@ -60,28 +62,35 @@
 .ezh{
   /* ---- height of the section ----
      svh is the SMALL viewport height: the window as it is with the
-     phone's address bar showing. Using it means the section does not
-     jump when that bar slides away mid-scroll. */
-  --h-mobile:58svh;
-  --h-desktop:88svh;
+     phone's address bar showing, so the section does not jump when
+     that bar slides away mid-scroll.
+
+     The film is 4:3 and a phone is far taller than it is wide, so a
+     full-height section on a phone crops a lot off the sides. Around
+     72svh keeps noticeably more of the picture and still reads as a
+     full hero. Put it back to 100svh if you would rather fill the
+     screen. */
+  --h-mobile:72svh;
+  --h-desktop:100svh;
 
   /* ---- which part of the picture survives the crop ----
      Same syntax as CSS object-position. "50% 50%" keeps the middle.
-     Try "50% 35%" to favour the top of the frame, "50% 65%" the
-     bottom. The first number moves it left and right. */
+     Try "50% 35%" to favour the top of the frame. */
   --focus:50% 50%;
 
-  /* ---- a black veil over the film ----
-     0 is the bare film. Raise it towards .45 if you put white text
-     on top and it is not reading cleanly. */
-  --scrim:0;
+  /* ---- the black veil over the film ----
+     0.3 is what the current cover uses, and it is what keeps the
+     white text readable. */
+  --scrim:.3;
 
-  /* colour behind the film - seen only in the instant before the
-     poster paints */
+  /* colour behind the film - seen only before the poster paints */
   --ground:#0a0a0a;
+
+  --sans:"FuturaPT","TildaSans",Arial,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
 
   display:block;
   background:var(--ground);
+  font-family:var(--sans);
   -webkit-text-size-adjust:100%;
   text-size-adjust:100%;
 }
@@ -92,7 +101,6 @@
   height:var(--h-mobile);
   background:var(--ground);
   overflow:hidden;
-  line-height:0;
 }
 
 @media (min-width:768px){
@@ -100,7 +108,7 @@
 }
 
 .ezh__stage video,
-.ezh__stage img{
+.ezh__still{
   position:absolute;
   inset:0;
   display:block;
@@ -110,10 +118,10 @@
   object-position:var(--focus);
 }
 
-/* the poster sits under the film and is covered the moment it paints,
-   so the section is never empty and never flashes black */
+/* the poster sits under the film and is covered the moment it
+   paints, so the section is never empty and never flashes black */
 .ezh__still{z-index:0}
-.ezh__stage video{z-index:1;opacity:0;transition:opacity .5s ease}
+.ezh__stage video{z-index:1;opacity:0;transition:opacity .6s ease}
 .ezh[data-playing="1"] .ezh__stage video{opacity:1}
 
 .ezh__scrim{
@@ -125,13 +133,72 @@
   pointer-events:none;
 }
 
+/* ---- the copy ---- */
+.ezh__copy{
+  position:absolute;
+  inset:0;
+  z-index:3;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+  padding:0 clamp(20px,6vw,40px);
+  color:#fff;
+  pointer-events:none;         /* never swallows a click meant for the page */
+}
+.ezh__copy > *{pointer-events:auto}
+
+.ezh__uptitle{
+  font-size:clamp(11px,1.15vw,14px);
+  font-weight:600;
+  letter-spacing:2.5px;
+  text-transform:uppercase;
+  margin:0 0 clamp(18px,3.2vw,34px);
+}
+
+.ezh__title{
+  font-size:clamp(34px,7.2vw,72px);
+  font-weight:600;
+  letter-spacing:.5px;
+  line-height:1.17;
+  margin:0;
+}
+
+.ezh__descr{
+  font-size:clamp(16px,2.2vw,24px);
+  font-weight:300;
+  line-height:1.5;
+  max-width:26em;
+  margin:clamp(16px,2.6vw,28px) auto 0;
+}
+
+/* ---- the arrow ---- */
+.ezh__arrow{
+  position:absolute;
+  left:50%;
+  bottom:clamp(22px,4vw,40px);
+  z-index:3;
+  transform:translateX(-50%);
+  width:34px;
+  height:20px;
+  opacity:.9;
+  animation:ezh-nudge 2.4s ease-in-out infinite;
+}
+.ezh__arrow svg{width:100%;height:100%;display:block;fill:none;stroke:#fff;stroke-width:1.6}
+
+@keyframes ezh-nudge{
+  0%,100%{transform:translateX(-50%) translateY(0)}
+  50%    {transform:translateX(-50%) translateY(6px)}
+}
+
 /* ---- play button ----
    Only ever seen if autoplay is refused: iOS Low Power Mode, or a
    visitor who has asked for reduced motion. */
 .ezh__play{
   position:absolute;
   inset:0;
-  z-index:3;
+  z-index:4;
   display:grid;
   place-items:center;
   border:0;
@@ -159,8 +226,8 @@
 .ezh__playDot svg{width:36%;height:36%;margin-left:12%;fill:#16161A}
 
 @media (prefers-reduced-motion:reduce){
-  .ezh__playDot{transition:none}
-  .ezh__stage video{transition:none}
+  .ezh__arrow{animation:none}
+  .ezh__playDot,.ezh__stage video{transition:none}
 }
 </style>
 
@@ -180,9 +247,19 @@
       disablepictureinpicture
       data-full="https://futurenyx.github.io/elizaveta-hero/media/hero.mp4"
       data-lite="https://futurenyx.github.io/elizaveta-hero/media/hero-lite.mp4"
-      aria-label="Интерьерная съёмка"></video>
+      aria-label="Елизавета Манина за работой"></video>
 
     <div class="ezh__scrim"></div>
+
+    <div class="ezh__copy">
+      <div class="ezh__uptitle">создаю искусство</div>
+      <h1 class="ezh__title">ELIZAVETA MANINA</h1>
+      <div class="ezh__descr">Закажите живопись, которая идеально дополнит Ваше пространство.</div>
+    </div>
+
+    <div class="ezh__arrow" aria-hidden="true">
+      <svg viewBox="0 0 34 20"><path d="M1 1l16 16L33 1" stroke-linecap="square"/></svg>
+    </div>
 
     <button class="ezh__play" type="button" aria-label="Смотреть" hidden>
       <span class="ezh__playDot">
@@ -254,7 +331,8 @@
 <div class="note">
   <h1>This page exists to host the film.</h1>
   <p>The block above is the same markup that goes into the Tilda page, pointing at
-     the same files. If it plays here, it plays there.</p>
+     the same files. If it plays here, it plays there. On the real page the type is
+     FuturaPT, which Tilda already loads; this preview substitutes Jost.</p>
   <p>Direct file: <code>/media/hero.mp4</code></p>
 </div>
 
