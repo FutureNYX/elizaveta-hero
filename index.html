@@ -42,9 +42,10 @@
      Same behaviour as the Nina page.
 
      THE TEXT is the same as the cover it replaces: same words, same
-     FuturaPT, same weights, same 30% black veil over the film. The
-     sizes are fluid rather than fixed so the title does not have to
-     jump at each Tilda breakpoint.
+     FuturaPT, same weights, same 30% black veil over the film. Every
+     size and gap was measured off the live cover at each of Tilda's
+     own breakpoints, phone included, so nothing shifts when the
+     block goes in.
 
      THE FIVE THINGS YOU MIGHT WANT TO CHANGE are the first lines of
      the CSS below:
@@ -66,21 +67,22 @@
 .ezh *,.ezh *::before,.ezh *::after{box-sizing:border-box}
 .ezh{
   /* ---- height of the section ----
+     Full screen, the same as the cover it replaces.
+
      svh is the SMALL viewport height: the window as it is with the
      phone's address bar showing, so the section does not jump when
-     that bar slides away mid-scroll.
-
-     The film is 4:3 and a phone is far taller than it is wide, so a
-     full-height section on a phone crops a lot off the sides. Around
-     72svh keeps noticeably more of the picture and still reads as a
-     full hero. Put it back to 100svh if you would rather fill the
-     screen. */
-  --h-mobile:72svh;
+     that bar slides away mid-scroll. Tilda sets its cover in px at
+     load, which comes to the same thing without the jump. */
+  --h-mobile:100svh;
   --h-desktop:100svh;
 
   /* ---- which part of the picture survives the crop ----
      Same syntax as CSS object-position. "50% 50%" keeps the middle.
-     Try "50% 35%" to favour the top of the frame. */
+
+     The film is 4:3 and a phone is far taller than it is wide, so a
+     full-screen section on a phone necessarily crops the sides hard.
+     This is the dial for choosing what stays: "50% 35%" favours the
+     top of the frame, "35% 50%" the left. */
   --focus:50% 50%;
 
   /* ---- the black veil over the film ----
@@ -138,32 +140,46 @@
   pointer-events:none;
 }
 
-/* ---- the copy ---- */
+/* ---- the copy ----
+   Every size, weight and gap below was measured off the live cover
+   at each of Tilda's own breakpoints, so the text is the same on the
+   page as it is now. The one surprise is the title on a phone: Tilda
+   drops it from 72px to 16px under 640px, which is why it sits so
+   close to the line above it there. Raise the 16px if you ever want
+   it bigger, but it will then stop matching the rest of the site. */
 .ezh__copy{
   position:absolute;
   inset:0;
   z-index:3;
   display:flex;
-  flex-direction:column;
-  align-items:center;
+  align-items:center;          /* the same vertical centring as the cover */
   justify-content:center;
-  text-align:center;
-  padding:0 clamp(20px,6vw,40px);
   color:#fff;
   pointer-events:none;         /* never swallows a click meant for the page */
 }
-.ezh__copy > *{pointer-events:auto}
+.ezh__inner > *{pointer-events:auto}
+
+/* Tilda's container: 1200px wide at most, 20px of gutter either side */
+.ezh__inner{
+  width:100%;
+  max-width:1200px;
+  margin:0 auto;
+  padding:0 20px;
+  text-align:center;
+}
 
 .ezh__uptitle{
-  font-size:clamp(11px,1.15vw,14px);
+  font-size:14px;
   font-weight:600;
   letter-spacing:2.5px;
   text-transform:uppercase;
-  margin:0 0 clamp(18px,3.2vw,34px);
+  line-height:normal;
+  margin:0;
+  padding:30px 0 60px;
 }
 
 .ezh__title{
-  font-size:clamp(34px,7.2vw,72px);
+  font-size:16px;
   font-weight:600;
   letter-spacing:.5px;
   line-height:1.17;
@@ -171,11 +187,23 @@
 }
 
 .ezh__descr{
-  font-size:clamp(16px,2.2vw,24px);
+  font-size:14px;
   font-weight:300;
-  line-height:1.5;
-  max-width:26em;
-  margin:clamp(16px,2.6vw,28px) auto 0;
+  line-height:20px;
+  margin:0;
+  padding:0 0 30px;
+}
+
+@media (min-width:640px){
+  .ezh__title{font-size:68px}
+  .ezh__descr{font-size:22px;line-height:33px}
+}
+@media (min-width:960px){
+  .ezh__descr{margin:0 120px}
+}
+@media (min-width:1200px){
+  .ezh__title{font-size:72px}
+  .ezh__descr{font-size:24px;line-height:36px;margin:0 230px}
 }
 
 /* ---- the arrow ---- */
@@ -296,9 +324,11 @@
     <div class="ezh__scrim"></div>
 
     <div class="ezh__copy">
-      <div class="ezh__uptitle">создаю искусство</div>
-      <h1 class="ezh__title">ELIZAVETA MANINA</h1>
-      <div class="ezh__descr">Закажите живопись, которая идеально дополнит Ваше пространство.</div>
+      <div class="ezh__inner">
+        <div class="ezh__uptitle">создаю искусство</div>
+        <h1 class="ezh__title">ELIZAVETA MANINA</h1>
+        <div class="ezh__descr">Закажите живопись, которая идеально дополнит Ваше пространство.</div>
+      </div>
     </div>
 
     <div class="ezh__arrow" aria-hidden="true">
