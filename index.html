@@ -15,26 +15,31 @@
 </style>
 
 <!-- ===========================================================
-     HERO - the film, with the existing hero text kept as it is
+     HERO - the film with sound, and the existing hero text kept
 
      PASTE ALL OF THIS INTO ONE TILDA BLOCK:
        Библиотека блоков -> Другое -> T123 "HTML-код"
      then hide or delete the current cover block (rec4027248601).
 
      THE FILM
-       media/hero.mp4     1440x1080   25.8 s   29.4 MB   silent
+       media/hero-sound.mp4   1440x1080  25.8 s  29.8 MB  with sound
 
-     This is the raw camera file: the video stream is copied
-     bit-for-bit from the original and only the audio was removed.
-     It streams from GitHub Pages, which answers range requests, so
+     This is the raw camera file: BOTH the picture and the sound are
+     copied bit-for-bit from the original, nothing re-encoded. It
+     streams from GitHub Pages, which answers range requests, so
      playback starts on the first chunk instead of after a download:
        https://futurenyx.github.io/elizaveta-hero
 
      WHY IT LOOKS BETTER THAN THE ONE ON THE PAGE NOW
-     The current file was re-encoded by Tilda on upload to 1.5 Mbps,
-     and it was padded from 4:3 out to 16:9, so a share of even that
-     small bitrate is being spent on the black bars rather than on
-     the picture. This file is 9.1 Mbps with no bars at all.
+     The current file was re-encoded by Tilda on upload down to
+     1.5 Mbps, and it was padded from 4:3 out to 16:9, so a share of
+     even that small bitrate is spent on the black bars rather than
+     on the picture. This file is 9.1 Mbps with no bars at all.
+
+     THE SOUND
+     A browser will not autoplay a video that has sound, so the film
+     starts muted and the button at the bottom right turns it on.
+     Same behaviour as the Nina page.
 
      THE TEXT is the same as the cover it replaces: same words, same
      FuturaPT, same weights, same 30% black veil over the film. The
@@ -192,13 +197,52 @@
   50%    {transform:translateX(-50%) translateY(6px)}
 }
 
+/* ---- sound ----
+   The film carries real sound, but a browser will only autoplay a
+   muted video, so it starts muted and this turns it on. */
+.ezh__sound{
+  position:absolute;
+  right:clamp(14px,3.5vw,28px);
+  bottom:clamp(14px,3.5vw,28px);
+  z-index:4;
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  height:clamp(40px,10vw,48px);
+  padding:0 clamp(14px,3.4vw,18px);
+  border:0;
+  border-radius:999px;
+  background:rgba(0,0,0,.42);
+  -webkit-backdrop-filter:blur(10px);
+  backdrop-filter:blur(10px);
+  color:#fff;
+  font-family:var(--sans);
+  font-size:clamp(12px,3vw,14px);
+  font-weight:600;
+  letter-spacing:.06em;
+  text-transform:uppercase;
+  line-height:1;
+  cursor:pointer;
+  -webkit-appearance:none;
+  appearance:none;
+  transition:background-color .22s ease,transform .22s cubic-bezier(.2,.7,.3,1);
+}
+.ezh__sound:hover{background:rgba(0,0,0,.62)}
+.ezh__sound:active{transform:scale(.97)}
+.ezh__sound:focus-visible{outline:3px solid #fff;outline-offset:3px}
+.ezh__sound svg{width:18px;height:18px;fill:currentColor;flex:none}
+.ezh__sound .ezh__soundOn{display:none}
+.ezh[data-sound="on"] .ezh__sound .ezh__soundOn{display:block}
+.ezh[data-sound="on"] .ezh__sound .ezh__soundOff{display:none}
+.ezh[data-sound="on"] .ezh__sound .ezh__soundLabel{display:none}
+
 /* ---- play button ----
    Only ever seen if autoplay is refused: iOS Low Power Mode, or a
    visitor who has asked for reduced motion. */
 .ezh__play{
   position:absolute;
   inset:0;
-  z-index:4;
+  z-index:5;
   display:grid;
   place-items:center;
   border:0;
@@ -227,11 +271,11 @@
 
 @media (prefers-reduced-motion:reduce){
   .ezh__arrow{animation:none}
-  .ezh__playDot,.ezh__stage video{transition:none}
+  .ezh__playDot,.ezh__sound,.ezh__stage video{transition:none}
 }
 </style>
 
-<div class="ezh">
+<div class="ezh" data-sound="off">
   <div class="ezh__stage">
 
     <img class="ezh__still"
@@ -245,8 +289,8 @@
       muted
       loop
       disablepictureinpicture
-      data-full="https://futurenyx.github.io/elizaveta-hero/media/hero.mp4"
-      data-lite="https://futurenyx.github.io/elizaveta-hero/media/hero-lite.mp4"
+      data-full="https://futurenyx.github.io/elizaveta-hero/media/hero-sound.mp4"
+      data-lite="https://futurenyx.github.io/elizaveta-hero/media/hero-sound-lite.mp4"
       aria-label="Елизавета Манина за работой"></video>
 
     <div class="ezh__scrim"></div>
@@ -260,6 +304,12 @@
     <div class="ezh__arrow" aria-hidden="true">
       <svg viewBox="0 0 34 20"><path d="M1 1l16 16L33 1" stroke-linecap="square"/></svg>
     </div>
+
+    <button class="ezh__sound" type="button" aria-label="Включить звук">
+      <svg class="ezh__soundOff" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9v6h4l5 4V5L8 9H4zm12.5 3a4.5 4.5 0 0 0-2.5-4v8a4.5 4.5 0 0 0 2.5-4z" opacity=".55"/><path d="M3 3l18 18-1.4 1.4L1.6 4.4z"/></svg>
+      <svg class="ezh__soundOn" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9v6h4l5 4V5L8 9H4zm12.5 3a4.5 4.5 0 0 0-2.5-4v8a4.5 4.5 0 0 0 2.5-4zM14 3.2v2.1a6.8 6.8 0 0 1 0 13.4v2.1a8.9 8.9 0 0 0 0-17.6z"/></svg>
+      <span class="ezh__soundLabel">Звук</span>
+    </button>
 
     <button class="ezh__play" type="button" aria-label="Смотреть" hidden>
       <span class="ezh__playDot">
@@ -277,6 +327,7 @@
   Array.prototype.forEach.call(document.querySelectorAll('.ezh'), function (wrap) {
     var v    = wrap.querySelector('video');
     var play = wrap.querySelector('.ezh__play');
+    var snd  = wrap.querySelector('.ezh__sound');
     if (!v || v.src) return;
 
     /* ---- which file ----
@@ -323,6 +374,13 @@
       var q = v.play();
       if (q && q.catch) q.catch(function () { play.hidden = false; });
     });
+
+    snd.addEventListener('click', function () {
+      v.muted = !v.muted;
+      wrap.setAttribute('data-sound', v.muted ? 'off' : 'on');
+      snd.setAttribute('aria-label', v.muted ? 'Включить звук' : 'Выключить звук');
+      if (v.paused) { play.hidden = true; v.play(); }
+    });
   });
 })();
 </script>
@@ -333,7 +391,7 @@
   <p>The block above is the same markup that goes into the Tilda page, pointing at
      the same files. If it plays here, it plays there. On the real page the type is
      FuturaPT, which Tilda already loads; this preview substitutes Jost.</p>
-  <p>Direct file: <code>/media/hero.mp4</code></p>
+  <p>Direct file: <code>/media/hero-sound.mp4</code></p>
 </div>
 
 <div class="filler">scroll back up — the film pauses when it leaves the screen</div>
